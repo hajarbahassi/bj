@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Zoom Optique | Précision & Élégance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABLES & RESET === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Correction : Remplacement du bleu par un Gris Foncé élégant */
+            --primary-dark: #1E293B; 
+            --primary-accent: #334155;
+            --primary-orange: #F97316;
+            --primary-light: #F8FAFC;
+            --text-dark: #0F172A;
+            --text-light: #F1F5F9;
+            --gray-mid: #CBD5E1;
+            --success: #10B981;
+            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background: var(--primary-light);
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title .subtitle {
+            color: var(--primary-orange);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        /* === TOP BAR === */
+        .top-bar {
+            background: var(--primary-dark);
+            color: white;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-bar i {
+            color: var(--primary-orange);
+            margin-right: 6px;
+        }
+
+        .top-bar a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .top-bar a:hover {
+            opacity: 0.8;
+            color: var(--primary-orange);
+        }
+
+        /* === BADGE LIVRAISON GRATUITE === */
+        .delivery-badge {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            animation: blink-animation 1.5s ease-in-out infinite;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        @keyframes blink-animation {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            50% { opacity: 0.7; box-shadow: 0 0 10px 5px rgba(249, 115, 22, 0.5); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+
+        /* === MODALE === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .modal-content button {
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        /* === NAVIGATION === */
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .logo span { color: var(--primary-orange); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary-orange); }
+
+        .nav-btn {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .nav-btn:hover { transform: translateY(-2px); }
+
+        /* === HERO === */
+        .hero {
+            background: linear-gradient(rgba(30, 41, 59, 0.85), rgba(30, 41, 59, 0.85)), url('clario-20.png.jpg') center/cover no-repeat;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 span {
+            color: var(--primary-orange);
+            display: block;
+            font-size: 2.8rem;
+            font-weight: 400;
+        }
+
+        /* === SERVICES === */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .service-card {
+            background: white;
+            padding: 32px 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-mid);
+            transition: all 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-orange);
+        }
+        .service-card i {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 16px;
+        }
+
+        /* === SLIDER === */
+        .slider-section {
+            background: var(--primary-dark);
+            padding: 80px 0;
+            overflow: hidden;
+        }
+        .slider-section .section-title h2 { color: white; }
+        .slider-track {
+            display: flex;
+            width: fit-content;
+            animation: scroll 60s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* === EXPERTISE === */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .expertise-image {
+            height: 500px;
+            background: url('clario-19.png.jpeg') center/cover no-repeat;
+            border-radius: 24px;
+            box-shadow: 20px 20px 0 var(--primary-orange);
+            position: relative;
+        }
+        .expertise-image::after {
+            content: 'M. Hamza Bahassi';
+            position: absolute;
+            bottom: 20px; left: -10px;
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            padding: 8px 24px;
+            font-weight: 700;
+            border-radius: 50px;
+        }
+
+        .optima-showcase {
+            margin-top: 30px;
+            background: #f1f5f9;
+            padding: 24px;
+            border-radius: 24px;
+            border: 2px solid var(--primary-orange);
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        /* === FORMULAIRE RDV === */
+        .rdv-section {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+        }
+        .rdv-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 48px;
+            border-radius: 32px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 2px solid var(--gray-mid);
+            border-radius: 8px;
+        }
+        .btn-submit {
+            background: var(--primary-orange);
+            color: var(--primary-dark);
+            border: none;
+            padding: 16px;
+            font-weight: 700;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* === CONTACT === */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .contact-info {
+            background: white;
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-detail a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .contact-detail a:hover { color: var(--primary-orange); }
+
+        /* === CHATBOT FONCTIONNEL === */
+        .chat-btn {
+            position: fixed;
+            bottom: 30px; left: 30px;
+            background: var(--primary-dark);
+            color: white;
+            width: 65px; height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            border: 3px solid var(--primary-orange);
+            box-shadow: var(--shadow-md);
+        }
+        .chat-box {
+            position: fixed;
+            bottom: 110px; left: 30px;
+            width: 320px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            z-index: 1000;
+            border: 2px solid var(--primary-orange);
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .chat-header {
+            background: var(--primary-dark);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            padding: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            max-width: 85%;
+        }
+        .bot-msg { background: #f1f5f9; align-self: flex-start; border-left: 4px solid var(--primary-orange); }
+        .user-msg { background: var(--primary-dark); color: white; align-self: flex-end; }
+        .chat-options { padding: 10px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 5px; }
+        .opt-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--primary-orange);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .opt-btn:hover { background: var(--primary-orange); color: white; }
+
+        /* === WHATSAPP === */
+        .wa-float {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: #25D366;
+            color: white;
+            width: 65px; height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            z-index: 999;
+            text-decoration: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        footer { background: var(--primary-dark); color: white; padding: 40px 0 20px; }
+
+        @media (max-width: 768px) {
+            .services-grid, .expertise-grid, .contact-grid, .form-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay" id="deliveryModal">
+        <div class="modal-content">
+            <i class="fas fa-truck" style="font-size: 3rem; color: var(--primary-orange);"></i>
+            <h3>Livraison Gratuite</h3>
+            <p>Nous offrons la livraison gratuite pour toute commande dans tout le Maroc.</p>
+            <button onclick="document.getElementById('deliveryModal').style.display='none'">Fermer</button>
+        </div>
+    </div>
+
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fas fa-map-marker-alt"></i> Bloc 8 N°15 Bis Youssoufia, Rabat</span>
+            <span class="delivery-badge" onclick="document.getElementById('deliveryModal').style.display='flex'">
+                <i class="fas fa-truck"></i> LIVRAISON GRATUITE
+            </span>
+            <span><i class="fas fa-phone-alt"></i> <a href="tel:+212752934107">07 52 93 41 07</a></span>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">MEGA<span>ZOOM</span></div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#catalogue">Collection</a>
+                <a href="#expertise">Expert</a>
+                <a href="#rdv">Rendez-vous</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <a href="#rdv" class="nav-btn">RDV</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content container">
+            <h1>Édition Limitée <span>Optique de Précision</span></h1>
+            <p>Découvrez la clarté absolue avec notre nouvelle collection Clario.</p>
+            <div style="margin-top: 30px;">
+                <a href="#catalogue" class="nav-btn" style="background:transparent; border:2px solid white; color:white; margin-right:10px;">Explorer</a>
+                <a href="#rdv" class="nav-btn">Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-title">
+                <span class="subtitle">NOTRE SAVOIR-FAIRE</span>
+                <h2>Services Haute Précision</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card"><i class="fas fa-eye"></i><h3>Examen de Vue</h3><p>Technologie Zeiss</p></div>
+                <div class="service-card"><i class="fas fa-glasses"></i><h3>Contactologie</h3><p>Adaptation expert</p></div>
+                <div class="service-card"><i class="fas fa-magic"></i><h3>Visagisme</h3><p>Conseil personnalisé</p></div>
+                <div class="service-card"><i class="fas fa-tools"></i><h3>Montage Artisanal</h3><p>Précision garantie</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="catalogue" class="slider-section">
+        <div class="container"><div class="section-title"><h2>Galerie Clario</h2></div></div>
+        <div class="slider-track">
+            <div class="slide"><img src="clario-1.png.png" alt="C1" style="width:250px; margin:10px; border-radius:10px;"></div>
+            <div class="slide"><img src="clario-2.png.png" alt="C2" style="width:250px; margin:10px; border-radius:10px;"></div>
+            <div class="slide"><img src="clario-3.png.png" alt="C3" style="width:250px; margin:10px; border-radius:10px;"></div>
+            <div class="slide"><img src="clario-22.png.jpeg" alt="C22" style="width:250px; margin:10px; border-radius:10px;"></div>
+            <div class="slide"><img src="clario-1.png.png" alt="C1" style="width:250px; margin:10px; border-radius:10px;"></div>
+            <div class="slide"><img src="clario-2.png.png" alt="C2" style="width:250px; margin:10px; border-radius:10px;"></div>
+        </div>
+    </section>
+
+    <section id="expertise" class="section">
+        <div class="container">
+            <div class="expertise-grid">
+                <div class="expertise-image"></div>
+                <div>
+                    <span class="subtitle">VOTRE OPTICIEN</span>
+                    <h2>M. Hamza Bahassi</h2>
+                    <p style="margin: 20px 0;">Expert en optométrie, M. Bahassi (Diplômé IPIAB 2021) assure un suivi rigoureux pour votre santé visuelle.</p>
+                    <div class="optima-showcase">
+                        <div class="optima-info">
+                            <h4><span>Série</span> OPTIMA</h4>
+                            <p>Design moderne & Protection UV</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="rdv" class="section rdv-section">
+        <div class="container">
+            <div class="rdv-card">
+                <div class="section-title">
+                    <span class="subtitle">PRENEZ RENDEZ-VOUS</span>
+                    <h2>Consultation Privée</h2>
+                </div>
+                <form id="rdvForm">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nom</label><input type="text" id="nom" required></div>
+                        <div class="form-group"><label>Prénom</label><input type="text" id="prenom" required></div>
+                        <div class="form-group"><label>Téléphone</label><input type="tel" id="tel" required></div>
+                        <div class="form-group"><label>Date</label><input type="date" id="date" required></div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Motif</label>
+                            <select id="motif" required>
+                                <option value="">Sélectionnez un motif</option>
+                                <option>Examen de vue</option>
+                                <option>Adaptation lentilles</option>
+                                <option>Nouvelle monture</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">ENVOYER LA DEMANDE</button>
+                    <p id="feedback" style="display:none; text-align:center; margin-top:15px; font-weight:600;"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Mega Zoom Optique</h3>
+                    <div class="contact-detail"><i class="fas fa-phone"></i> <a href="tel:+212752934107">07 52 93 41 07</a></div>
+                    <div class="contact-detail"><i class="fas fa-envelope"></i> <a href="mailto:contact@megazoom.ma">contact@megazoom.ma</a></div>
+                    <p style="margin-top:15px;"><i class="fas fa-clock"></i> Lun-Sam: 09h30 - 19h30</p>
+                </div>
+                <div style="border-radius:24px; overflow:hidden; height:250px;">
+                    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-6.8365%2C33.9715%2C-6.8265%2C33.9815&layer=mapnik" style="width:100%; height:100%; border:0;"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chat-btn" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></div>
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <strong>Assistant MegaZoom</strong>
+            <span onclick="toggleChat()" style="cursor:pointer;">✕</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-msg">Bonjour ! Comment puis-je vous aider aujourd'hui ?</div>
+        </div>
+        <div class="chat-options">
+            <button class="opt-btn" onclick="botResponse('horaires')">Horaires</button>
+            <button class="opt-btn" onclick="botResponse('examen')">Examen de vue</button>
+            <button class="opt-btn" onclick="botResponse('rdv')">Prendre RDV</button>
+        </div>
+    </div>
+
+    <a href="https://wa.me/212752934107" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+    <footer>
+        <div class="container">
+            <p style="text-align:center;">&copy; 2026 Mega Zoom Optique Rabat - Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // MODALE
+        function toggleModal(id, action) {
+            document.getElementById(id).style.display = (action === 'open') ? 'flex' : 'none';
+        }
+
+        // FORMULAIRE RDV -> WHATSAPP FONCTIONNEL
+        document.getElementById('rdvForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nom = document.getElementById('nom').value;
+            const prenom = document.getElementById('prenom').value;
+            const tel = document.getElementById('tel').value;
+            const date = document.getElementById('date').value;
+            const motif = document.getElementById('motif').value;
+
+            // Validation simple
+            if(nom && tel && date) {
+                const message = `Bonjour Mega Zoom Optique, je souhaite prendre rendez-vous :%0A- Nom : ${nom} ${prenom}%0A- Tél : ${tel}%0A- Date : ${date}%0A- Motif : ${motif}`;
+                const whatsappUrl = `https://wa.me/212752934107?text=${message}`;
+                
+                document.getElementById('feedback').style.display = "block";
+                document.getElementById('feedback').style.color = "green";
+                document.getElementById('feedback').innerText = "Redirection vers WhatsApp...";
+                
+                setTimeout(() => {
+                    window.open(whatsappUrl, '_blank');
+                }, 1000);
+            }
+        });
+
+        // CHATBOT LOGIQUE
+        function toggleChat() {
+            const box = document.getElementById('chatBox');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function botResponse(topic) {
+            const body = document.getElementById('chatBody');
+            let userTxt = "";
+            let botTxt = "";
+
+            if(topic === 'horaires') {
+                userTxt = "Quels sont vos horaires ?";
+                botTxt = "Nous sommes ouverts du Lundi au Vendredi de 09h30 à 19h30, et le Samedi de 10h00 à 18h00.";
+            } else if(topic === 'examen') {
+                userTxt = "Proposez-vous des examens de vue ?";
+                botTxt = "Oui ! Nous utilisons du matériel de précision Zeiss. L'examen est offert pour tout achat de monture.";
+            } else if(topic === 'rdv') {
+                userTxt = "Je veux prendre rendez-vous.";
+                botTxt = "Très bien ! Vous pouvez remplir le formulaire sur le site ou nous appeler directement au 07 52 93 41 07.";
+            }
+
+            // Append User Message
+            body.innerHTML += `<div class="message user-msg">${userTxt}</div>`;
+            
+            // Append Bot Message with small delay
+            setTimeout(() => {
+                body.innerHTML += `<div class="message bot-msg">${botTxt}</div>`;
+                body.scrollTop = body.scrollHeight;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
